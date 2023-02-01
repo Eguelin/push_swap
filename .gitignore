@@ -1,0 +1,10 @@
+a.out*
+.DS_Store
+*.gch
+*.o
+*.a
+build
+push_swap
+test
+checker
+*.log
