@@ -44,7 +44,7 @@ static int	ft_convert_argv2(t_lsti **stack, char *argv)
 	j = 0;
 	error = 0;
 	tab = ft_split(argv, ' ');
-	if (!tab)
+	if (!tab || !tab[j])
 		return (ft_lsticlear(stack), 1);
 	while (tab[j])
 	{
