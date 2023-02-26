@@ -6,7 +6,7 @@
 /*   By: eguelin <eguelin@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 15:47:44 by eguelin           #+#    #+#             */
-/*   Updated: 2023/01/29 16:09:55 by eguelin          ###   ########lyon.fr   */
+/*   Updated: 2023/02/25 16:21:38 by eguelin          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	ft_convert_argv2(t_lsti **stack, char *argv)
 	error = 0;
 	tab = ft_split(argv, ' ');
 	if (!tab || !tab[j])
-		return (ft_lsticlear(stack), 1);
+		return (ft_free_tab(tab), ft_lsticlear(stack), 1);
 	while (tab[j])
 	{
 		block = ft_lstinew(ft_atoi(tab[j], &error));
