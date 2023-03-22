@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: emilienguelin <emilienguelin@student.42    +#+  +:+       +#+         #
+#    By: eguelin <eguelin@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/19 12:06:08 by eguelin           #+#    #+#              #
-#    Updated: 2023/02/01 21:20:33 by emilienguel      ###   ########lyon.fr    #
+#    Updated: 2023/03/22 17:05:07 by eguelin          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,6 @@
 OUT_DIR		= build/
 SRC_DIR		= src/
 INC_DIR		= include/
-LST_DIR		= list/
-INST_DIR	= instruction/
-SORT_DIR	= sort/
-TOOL_DIR	= tool/
-
 NAME		= push_swap
 CC			= cc
 CFLAGS		= -Wall -Werror -Wextra -I $(INC_DIR)
@@ -41,50 +36,32 @@ CLEAN_MSG		= "$(RED)Cleaning $(NAME) $(WHITE)done on $(YELLOW)$(shell date +'%Y-
 FULL_CLEAN_MSG	= "$(PURPLE)Full cleaning $(NAME) $(WHITE)done on $(YELLOW)$(shell date +'%Y-%m-%d %H:%M:%S')$(WHITE)"
 
 #Sources
-FILES		= ft_push_swap
-FILES_INST	= ft_swap ft_push ft_rotate ft_reverse_rotate
-FILES_SORT	= ft_sort_three ft_sort_five ft_radix
-FILES_TOOL	= ft_index ft_convert_argv ft_check_multiple ft_end_stack ft_is_in_order ft_atoi ft_putstr_fd ft_strlen ft_isdigit ft_split
-FILES_LST	= ft_lstidelone ft_lsticlear ft_lstinew ft_lstiadd_back ft_lstilast ft_lstisize
-FILES_ALL	= $(FILES) \
-			$(addprefix $(INST_DIR), $(FILES_INST)) \
-			$(addprefix $(TOOL_DIR), $(FILES_TOOL)) \
-			$(addprefix $(SORT_DIR), $(FILES_SORT)) \
-			$(addprefix $(LST_DIR), $(FILES_LST))
-INC_FILES	= ft_push_swap
-
-OBJS	= $(addprefix $(OUT_DIR), $(addsuffix .o, $(FILES_ALL)))
-HEADERS	= $(addprefix $(INC_DIR), $(addsuffix .h, $(INC_FILES)))
+OBJS		= $(shell find $(SRC_DIR) -type f | awk -F "." '$$NF=="c" {print $$(NF - 1) ".o"}' | awk -F "$(SRC_DIR)" '{print "$(OUT_DIR)"$$NF}')
+HEADERS		= $(shell find $(INC_DIR) -type f | awk -F "." '$$NF=="h" {print $$0}')
 
 #Rules
-
-.PHONY: all
 all: $(NAME)
 
 $(NAME): $(OUT_DIR) $(OBJS)
-	@norminette | awk '$$NF!="OK!" {print "\033[0;31m" $$0 "\033[0m"}'
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo $(COMP_MSG)
+	@norminette | awk '$$NF!="OK!" {print "$(RED)" $$0 "$(WHITE)"}'
 
 $(OUT_DIR)%.o : $(SRC_DIR)%.c $(HEADERS) Makefile
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: clean
 clean:
-	@$(RM) $(OUT_DIR)
+	$(RM) $(OUT_DIR)
 	@echo $(CLEAN_MSG)
 
-.PHONY: fclean
 fclean: clean
-	@$(RM) $(NAME)
+	$(RM) $(NAME)
 	@echo $(FULL_CLEAN_MSG)
 
-.PHONY: re
 re: fclean all
 
 $(OUT_DIR):
-	@mkdir -p $(OUT_DIR)
-	@mkdir -p $(OUT_DIR)$(INST_DIR)
-	@mkdir -p $(OUT_DIR)$(SORT_DIR)
-	@mkdir -p $(OUT_DIR)$(TOOL_DIR)
-	@mkdir -p $(OUT_DIR)$(LST_DIR)
+	mkdir -p $(shell find $(SRC_DIR) -type d | awk -F "$(SRC_DIR)" '$$NF!="$(SRC_DIR)" {print "$(OUT_DIR)"$$(NF)}')
+
+.PHONY: all clean fclean re
+.SILENT:
